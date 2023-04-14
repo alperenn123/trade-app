@@ -1,0 +1,31 @@
+version: "3"
+
+services:
+  app:
+    container_name: eva-exchange
+    build:
+      context: .
+    ports:
+      - "3000:3000"
+    environment:
+      WAIT_HOSTS: db:5432
+    depends_on:
+      - db
+    env_file:
+      - .env
+    networks: ["appnetwork"]
+  db:
+    container_name: eva-exchange-db
+    image: postgres
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_NAME}
+    ports:
+      - "5432:5432"
+    volumes:
+      - db:/var/lib/postgresql/data
+    networks: ["appnetwork"]
+volumes:
+  db:
+networks: { appnetwork: {} }
